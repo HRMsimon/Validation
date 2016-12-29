@@ -13,14 +13,20 @@ matrix:
     - php: 7.0
     - php: 7.1
     - php: nightly
+    - php: hhvm
   allow_failures:
     - php: nightly
+    - php: hhvm
   fast_finish: true
 
 before_script:
   - composer update --prefer-dist ${COMPOSER_ARGUMENTS}
 
 script:
+  - |
+    if [[ "${TRAVIS_PHP_VERSION}" == "hhvm" ]]; then
+      echo "hhvm.php7.all=1" >> /etc/hhvm/php.ini
+    fi
   - vendor/bin/phpunit --configuration phpunit.xml.dist --colors --coverage-clover=coverage.clover
   - |
     if [[ "${TRAVIS_PHP_VERSION}" == "7.1" ]]; then
